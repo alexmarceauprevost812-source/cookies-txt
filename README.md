@@ -1,68 +1,120 @@
-# Outil de gestion des tâches
+# cookies-txt
 
-Ce document décrit comment installer et utiliser l'outil de gestion des tâches.
+Projet TI-LEX de laboratoire local.
 
-## Installation
+Le dépôt contient actuellement :
 
-Pour installer l'outil, suivez les étapes suivantes :
+- `index.html` : interface web locale
+- `scan_ports.py` : diagnostic de ports sur `127.0.0.1`
+- `main.py` : prototype en développement
+- `attacks_analysis.py` : prototype en développement
 
-1. Clonez le dépôt GitHub :
-   ```sh
-   git clone https://github.com/votre_nom_d_utilisateur/outil-gestion-taches.git
-   ```
+> Utiliser uniquement sur ton propre ordinateur ou dans un laboratoire autorisé.
 
-2. Naviguez vers le répertoire du projet :
-   ```sh
-   cd outil-gestion-taches
-   ```
+## Windows PowerShell
 
-3. Installez les dépendances nécessaires :
-   ```sh
-   pip install -r requirements.txt
-   ```
+### Télécharger le projet
 
-## Utilisation
-
-Pour exécuter l'outil, utilisez la commande suivante :
-
-```sh
-python main.py
+```powershell
+cd $HOME
+git clone https://github.com/alexmarceauprevost812-source/cookies-txt.git
+cd cookies-txt
+git checkout supabase
 ```
 
-Cela lancera l'interface de l'outil de gestion des tâches.
+Si le dépôt est déjà téléchargé :
 
-## Aide
-
-Pour obtenir de l'aide sur les commandes disponibles, utilisez :
-
-```sh
-python main.py --help
+```powershell
+cd "$HOME\cookies-txt"
+git pull
 ```
 
-## Exemple d'utilisation
+### Ouvrir l'interface
 
-Voici un exemple de comment ajouter une nouvelle tâche :
-
-```sh
-python main.py add "Faire les courses"
+```powershell
+Start-Process .\index.html
 ```
 
-Pour afficher la liste des tâches :
+### Lancer l'interface avec un serveur local
 
-```sh
-python main.py list
+```powershell
+python -m http.server 8000
 ```
 
-Pour supprimer une tâche :
+Puis ouvre une deuxième fenêtre PowerShell :
 
-```sh
-python main.py remove 1
+```powershell
+Start-Process http://127.0.0.1:8000/index.html
 ```
 
-## Contribuer
+Pour arrêter le serveur :
 
-Si vous souhaitez contribuer à ce projet, veuillez suivre les instructions dans le fichier [CONTRIBUTING.md](CONTRIBUTING.md).
+```text
+Ctrl+C
+```
 
-## License
+### Tester le diagnostic local Python
 
-Ce projet est sous licence MIT. Consultez le fichier [LICENSE](LICENSE) pour plus de détails.
+```powershell
+python .\scan_ports.py
+```
+
+Le script utilise actuellement `127.0.0.1`, donc il reste sur ton propre ordinateur.
+
+---
+
+## Kali Linux / Ubuntu
+
+### Télécharger le projet
+
+```bash
+sudo apt update
+sudo apt install -y git python3
+cd ~
+git clone https://github.com/alexmarceauprevost812-source/cookies-txt.git
+cd cookies-txt
+git checkout supabase
+```
+
+Si le dépôt est déjà téléchargé :
+
+```bash
+cd ~/cookies-txt
+git pull
+```
+
+### Ouvrir l'interface
+
+```bash
+xdg-open index.html
+```
+
+### Lancer un serveur web local
+
+```bash
+python3 -m http.server 8000
+```
+
+Puis ouvre :
+
+```text
+http://127.0.0.1:8000/index.html
+```
+
+### Tester le diagnostic local Python
+
+```bash
+python3 scan_ports.py
+```
+
+## Important
+
+Il n'y a actuellement aucun fichier `requirements.txt`, donc il ne faut pas utiliser :
+
+```text
+pip install -r requirements.txt
+```
+
+Les commandes `add`, `list` et `remove` de l'ancien README ne font pas partie de ce projet.
+
+`main.py` et `attacks_analysis.py` sont encore des prototypes et ne sont pas les commandes de lancement recommandées pour cette version.
