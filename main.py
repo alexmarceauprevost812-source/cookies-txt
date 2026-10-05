@@ -1,136 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TI-LEX CODEX</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: 50px auto;
-            background-color: #333;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #fff;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-top: 10px;
-        }
-        input[type="text"], input[type="submit"] {
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #555;
-            border-radius: 5px;
-            color: #fff;
-            background-color: #444;
-        }
-        input[type="submit"] {
-            background-color: #007BFF;
-            color: #fff;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #555;
-            border: 1px solid #333;
-            border-radius: 5px;
-            color: #fff;
-        }
-        .cookie-input {
-            margin-top: 20px;
-        }
-        .attack-button {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>TI-LEX CODEX</h1>
-        <form id="appInfoForm">
-            <label for="macAddress">MAC Address:</label>
-            <input type="text" id="macAddress" name="macAddress" readonly>
-            <label for="openPort">Open Port:</label>
-            <input type="text" id="openPort" name="openPort" readonly>
-            <label for="cookies">Cookies:</label>
-            <input type="text" id="cookies" name="cookies" readonly>
-            <input type="submit" value="Get Information">
-        </form>
-        <div class="result" id="result"></div>
-        <div class="cookie-input">
-            <label for="cookieInput">Cookies:</label>
-            <input type="text" id="cookieInput" name="cookieInput">
-        </div>
-        <div class="attack-button">
-            <input type="submit" value="Attack Target" id="attackButton">
-        </div>
-    </div>
+import time
+import sys
+import socket
 
-    <script>
-        document.getElementById('appInfoForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const macAddress = getMacAddress();
-            const openPort = findOpenPort();
-            const cookies = get_cookies();
+def simulate_attack(target):
+    print(f"Simulating attack on target: {target}")
+    time.sleep(2)
+    print("Attack completed.")
 
-            document.getElementById('macAddress').value = macAddress;
-            document.getElementById('openPort').value = openPort;
-            document.getElementById('cookies').value = cookies;
+def scan_port(ip, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1)
+    result = sock.connect_ex((ip, port))
+    sock.close()
+    return result == 0
 
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `
-                <p><strong>MAC Address:</strong> ${macAddress}</p>
-                <p><strong>Open Port:</strong> ${openPort}</p>
-                <p><strong>Cookies:</strong> ${cookies}</p>
-            `;
-        });
+def scan_ports(ip, ports):
+    open_ports = []
+    for port in ports:
+        if scan_port(ip, port):
+            open_ports.append(port)
+            print(f"Port {port} is open")
+        else:
+            print(f"Port {port} is closed")
+    return open_ports
 
-        document.getElementById('attackButton').addEventListener('click', function(event) {
-            event.preventDefault();
-            const target = document.getElementById('cookieInput').value;
-            if (target) {
-                alert(`Attacking target: ${target}`);
-                // Add your attack logic here
-            } else {
-                alert('Please enter a target');
-            }
-        });
+def generate_mac_address():
+    return ':'.join(['{:02x}'.format((Math.random() * 256) % 256) for i in range(6)])
 
-        function getMacAddress() {
-            return ':'.join(['{:02x}'.format((Math.random() * 256) % 256) for i in range(6)]);
-        }
+def get_cookies():
+    return "session_id=1234567890; user=admin"
 
-        function findOpenPort() {
-            const s = new WebSocket('ws://127.0.0.1:8080');
-            s.onopen = () => {
-                s.close();
-                return 8080;
-            };
-            s.onerror = () => {
-                return 5000;
-            };
-        }
+def main():
+    print("Welcome to TI-LEX CODEX Attack Analysis Script")
+    print("Please enter the target IP address to analyze attacks:")
+    target_ip = input("IP Address: ")
 
-        function get_cookies() {
-            return "session_id=1234567890; user=admin";
-        }
-    </script>
-</body>
-</html>
+    if not target_ip:
+        print("No target provided. Exiting.")
+        sys.exit(1)
+
+    print("Scanning open ports...")
+    open_ports = scan_ports(target_ip, range(1, 1025))
+    print(f"Open ports: {open_ports}")
+
+    print("Analyzing possible attacks...")
+    mac_address = generate_mac_address()
+    cookies = get_cookies()
+
+    print(f"MAC Address: {mac_address}")
+    print(f"Cookies: {cookies}")
+
+    print("Selecting top 10 possible attacks:")
+    attacks = [
+        "Cross-Site Scripting (XSS)",
+        "Cross-Site Request Forgery (CSRF)",
+        "SQL Injection",
+        "Command Injection",
+        "Buffer Overflow",
+        "Denial of Service (DoS)",
+        "Man-in-the-Middle (MITM)",
+        "Phishing",
+        "Session Hijacking",
+        "Cross-Site Flashing (XSF)"
+    ]
+
+    for i, attack in enumerate(attacks, 1):
+        print(f"{i}. {attack}")
+
+    choice = input("Enter the number of the attack to simulate: ")
+
+    try:
+        attack_number = int(choice)
+        if 1 <= attack_number <= len(attacks):
+            simulate_attack(attacks[attack_number - 1])
+        else:
+            print("Invalid attack number. Exiting.")
+    except ValueError:
+        print("Invalid input. Exiting.")
+
+if __name__ == "__main__":
+    main()
